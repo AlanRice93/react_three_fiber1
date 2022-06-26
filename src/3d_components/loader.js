@@ -1,45 +1,62 @@
 import * as THREE from 'three'
 import React, { useRef, useState } from 'react'
-import {useFrame} from '@react-three/fiber'
-import { useGLTF, useCursor, Text } from "@react-three/drei";
+import { useFrame } from '@react-three/fiber'
+import { useGLTF, useCursor, Text } from '@react-three/drei'
 
+import human from './human.glb'
 
-function ModelLoader (props) {   
+function ModelLoader(props) {
     const v = new THREE.Vector3()
     const ref = useRef()
-    const modelString = '/' + props.modelName + '.glb'
-    const {nodes, materials} = useGLTF(modelString)
+    // const modelString = './' + props.modelName + '.glb'
+    const { nodes, materials } = useGLTF(human)
+
+    console.log('==nodes==')
+    console.log(nodes)
 
     const [active, setActive] = useState(false)
     const [zoom, set] = useState(false)
 
     const shinyMaterial = new THREE.MeshPhysicalMaterial({
         color: new THREE.Color(
-            props.activeItem === props.section ?
-            props.selectedColor : props.color
-            ).convertSRGBToLinear(),
+            props.activeItem === props.section
+                ? props.selectedColor
+                : props.color
+        ).convertSRGBToLinear(),
         roughness: 0,
         clearcoat: 1,
         clearcoatRoughness: 0,
     })
 
     useCursor(active)
-    
+
     useFrame((state, delta) => {
-        ref.current.position.lerp(v.set(
-            props.activeItem == null ? props.position[0] :
-            props.activeItem === props.section ? 0 :
-            props.position[0],
+        ref.current.position.lerp(
+            v.set(
+                props.activeItem == null
+                    ? props.position[0]
+                    : props.activeItem === props.section
+                    ? 0
+                    : props.position[0],
 
-            props.activeItem == null ? props.position[1] :
-            props.activeItem === props.section ? props.position[1] - 3 :
-            -20,
+                props.activeItem == null
+                    ? props.position[1]
+                    : props.activeItem === props.section
+                    ? props.position[1] - 3
+                    : -20,
 
-            props.activeItem == null ? props.position[2] :
-            props.activeItem === props.section ? 55 :
-            props.position[2],
-        ), 0.05)
-        if (props.activeItem === props.section && ref.current.rotation.z % (Math.PI*2) <= 0.15) {
+                props.activeItem == null
+                    ? props.position[2]
+                    : props.activeItem === props.section
+                    ? 55
+                    : props.position[2]
+            ),
+            0.05
+        )
+        if (
+            props.activeItem === props.section &&
+            ref.current.rotation.z % (Math.PI * 2) <= 0.15
+        ) {
         } else {
             ref.current.rotation.z = ref.current.rotation.z += delta * 1.5
         }
@@ -48,38 +65,29 @@ function ModelLoader (props) {
     return (
         <>
             <mesh
-                ref={ref} 
+                ref={ref}
                 {...props}
-                
                 onClick={() => {
                     set(!zoom)
                     props.selectObj(props.section)
-                }} 
-                
-                onPointerOver={() => setActive(true)} 
+                }}
+                onPointerOver={() => setActive(true)}
                 onPointerOut={() => setActive(false)}
                 receiveShadow
                 castShadow
-                geometry={nodes[props.modelExtension].geometry} 
-                rotation={[Math.PI / 2, 0, 0]} 
+                geometry={nodes[props.modelExtension]?.geometry}
+                rotation={[Math.PI / 2, 0, 0]}
                 material={shinyMaterial}
-            >
-            </mesh>
+            ></mesh>
             <Text
-                position={[
-                    props.position[0] * 0.9,
-                    3,
-                    props.position[2] + 15
-                ]}
+                position={[props.position[0] * 0.9, 3, props.position[2] + 15]}
                 lineHeight={0.8}
-                font="/Ki-Medium.ttf"
+                font='/Ki-Medium.ttf'
                 fontSize={2}
                 material-toneMapped={false}
-                anchorX="center"
-                anchorY="middle"
-                fillOpacity={props.activeItem === null ?
-                    1 : 0
-                }
+                anchorX='center'
+                anchorY='middle'
+                fillOpacity={props.activeItem === null ? 1 : 0}
                 color={'#ffffff'}
             >
                 {props.section}
