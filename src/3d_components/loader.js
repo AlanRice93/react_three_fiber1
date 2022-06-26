@@ -3,13 +3,12 @@ import React, { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useGLTF, useCursor, Text } from '@react-three/drei'
 
-import human from './human.glb'
+import human from './models/human.glb'
 
 function ModelLoader(props) {
     const v = new THREE.Vector3()
     const ref = useRef()
-    // const modelString = './' + props.modelName + '.glb'
-    const { nodes, materials } = useGLTF(human)
+    const { nodes, materials } = useGLTF(props.modelName)
 
     console.log('==nodes==')
     console.log(nodes)
